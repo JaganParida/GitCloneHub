@@ -1,5 +1,5 @@
-async function pullRepo() {
+async function pushRepo() {
   console.log("pull command called");
 }
 
-module.exports = { pullRepo };
+module.exports = { pushRepo };
