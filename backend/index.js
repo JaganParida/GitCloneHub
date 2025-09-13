@@ -3,6 +3,7 @@ const { hideBin } = require("yargs/helpers");
 
 const { initRepo } = require("./controllers/init");
 const { addRepo } = require("./controllers/add");
+const { commitRepo } = require("./controllers/commit");
 
 yargs(hideBin(process.argv))
   .command("init", "Initialize a new repository", {}, initRepo)
@@ -16,6 +17,30 @@ yargs(hideBin(process.argv))
       });
     },
     addRepo
+  )
+  .command(
+    "commit <message>",
+    "Commit the staged file",
+    (yargs) => {
+      yargs.positional("message", {
+        describe: "Commit message",
+        type: "String",
+      });
+    },
+    commitRepo
+  )
+  .command("push", "Push commits to S3", {}, pushRepo)
+  .command("pull", "Pull commits from S3", {}, pullRepo)
+  .command(
+    "revert <CommitID>",
+    "Revert to a specific commit",
+    (yargs) => {
+      yargs.positional("CommitID", {
+        describe: "Commit ID to revert to",
+        type: "String",
+      });
+    },
+    revertRepo
   )
   .demandCommand(1, "You need atleast one command")
   .help().argv;
