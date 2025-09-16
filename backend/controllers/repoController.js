@@ -10,6 +10,10 @@ const fetchRepositoryById = (req, res) => {
   res.send("Repository Details fetched!");
 };
 
+const fetchRepositoryByName = (req, res) => {
+  res.send("Repository Details fetched!");
+};
+
 const fetchRepositoryForCurrentUser = (req, res) => {
   res.send("Repository for LOgged in user Fetched!");
 };
@@ -30,6 +34,7 @@ module.exports = {
   createRepository,
   getAllRepositories,
   fetchRepositoryById,
+  fetchRepositoryByName,
   fetchRepositoryForCurrentUser,
   updateRepopsitoryById,
   toggleVisibilityById,
