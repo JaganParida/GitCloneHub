@@ -85,13 +85,44 @@ async function login(req, res) {
   }
 }
 
-const getAllUsers = (req, res) => {
-  res.send("All users fetched!");
-};
+//getAllUser
+async function getAllUsers(req, res) {
+  try {
+    await connectClient();
+    const db = client.db("GitCloneHub");
+    const usersCollection = db.collection("users");
 
-const getUserProfile = (req, res) => {
-  res.send("Profile fetched!");
-};
+    const users = await usersCollection.find({}).toArray();
+    res.json(users);
+  } catch (err) {
+    console.error("Error during fetching : ", err.message);
+    res.status(500).send("Server error!");
+  }
+}
+
+//getOneUserProfile
+async function getUserProfile(req, res) {
+  const currentID = req.params.id;
+
+  try {
+    await connectClient();
+    const db = client.db("GitCloneHub");
+    const usersCollection = db.collection("users");
+
+    const user = await usersCollection.findOne({
+      _id: new ObjectId(currentID),
+    });
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found!" });
+    }
+
+    res.send(user);
+  } catch (err) {
+    console.error("Error during fetching : ", err.message);
+    res.status(500).send("Server error!");
+  }
+}
 
 const updateUserProfile = (req, res) => {
   res.send("Profile updated!");
