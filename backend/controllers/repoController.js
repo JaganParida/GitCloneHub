@@ -3,7 +3,7 @@ const Repository = require("../models/repoModel");
 const User = require("../models/userModel");
 const Issue = require("../models/issueModel");
 
-//createNewRepo
+// Create new repository
 async function createRepository(req, res) {
   const { owner, name, issues, content, description, visibility } = req.body;
 
@@ -37,31 +37,67 @@ async function createRepository(req, res) {
   }
 }
 
-const getAllRepositories = (req, res) => {
-  res.send("All Repositories fetched!");
+// Get all repositories
+async function getAllRepositories(req, res) {
+  try {
+    const repositories = await Repository.find({})
+      .populate("owner")
+      .populate("issues");
+
+    res.json(repositories);
+  } catch (err) {
+    console.error("Error during fetching repositories : ", err.message);
+    res.status(500).send("Server error");
+  }
+}
+
+// Fetch repo by ID
+async function fetchRepositoryById(req, res) {
+  const { id } = req.params;
+  try {
+    const repository = await Repository.find({ _id: id })
+      .populate("owner")
+      .populate("issues");
+
+    res.json(repository);
+  } catch (err) {
+    console.error("Error during fetching repository : ", err.message);
+    res.status(500).send("Server error");
+  }
+}
+
+// Fetch repo by name
+async function fetchRepositoryByName(req, res) {
+  const { name } = req.params;
+  try {
+    const repository = await Repository.find({ name })
+      .populate("owner")
+      .populate("issues");
+
+    res.json(repository);
+  } catch (err) {
+    console.error("Error during fetching repository : ", err.message);
+    res.status(500).send("Server error");
+  }
+}
+
+// Fetch repositories for current user
+const fetchRepositoriesForCurrentUser = (req, res) => {
+  res.send("Repository for Logged in user Fetched!");
 };
 
-const fetchRepositoryById = (req, res) => {
-  res.send("Repository Details fetched!");
-};
-
-const fetchRepositoryByName = (req, res) => {
-  res.send("Repository Details fetched!");
-};
-
-const fetchRepositoryForCurrentUser = (req, res) => {
-  res.send("Repository for LOgged in user Fetched!");
-};
-
-const updateRepopsitoryById = (req, res) => {
+// Update repository by ID
+const updateRepositoryById = (req, res) => {
   res.send("Repository updated!");
 };
 
+// Toggle repo visibility
 const toggleVisibilityById = (req, res) => {
   res.send("Visibility Toggled!");
 };
 
-const deleteRepopsitoryById = (req, res) => {
+// Delete repo by ID
+const deleteRepositoryById = (req, res) => {
   res.send("Repository Deleted!");
 };
 
@@ -70,8 +106,8 @@ module.exports = {
   getAllRepositories,
   fetchRepositoryById,
   fetchRepositoryByName,
-  fetchRepositoryForCurrentUser,
-  updateRepopsitoryById,
+  fetchRepositoriesForCurrentUser,
+  updateRepositoryById,
   toggleVisibilityById,
-  deleteRepopsitoryById,
+  deleteRepositoryById,
 };
