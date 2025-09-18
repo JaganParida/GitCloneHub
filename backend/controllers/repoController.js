@@ -82,14 +82,49 @@ async function fetchRepositoryByName(req, res) {
 }
 
 // Fetch repositories for current user
-const fetchRepositoriesForCurrentUser = (req, res) => {
-  res.send("Repository for Logged in user Fetched!");
-};
+async function fetchRepositoriesForCurrentUser(req, res) {
+  console.log(req.params);
+  const { userID } = req.params;
+
+  try {
+    const repositories = await Repository.find({ owner: userID });
+
+    if (!repositories || repositories.length == 0) {
+      return res.status(404).json({ error: "User Repositories not found!" });
+    }
+    console.log(repositories);
+    res.json({ message: "Repositories found!", repositories });
+  } catch (err) {
+    console.error("Error during fetching user repositories : ", err.message);
+    res.status(500).send("Server error");
+  }
+}
 
 // Update repository by ID
-const updateRepositoryById = (req, res) => {
-  res.send("Repository updated!");
-};
+async function updateRepositoryById(req, res) {
+  const { id } = req.params;
+  const { content, description } = req.body;
+
+  try {
+    const repository = await Repository.findById(id);
+    if (!repository) {
+      return res.status(404).json({ error: "Repository not found!" });
+    }
+
+    repository.content.push(content);
+    repository.description = description;
+
+    const updatedRepository = await repository.save();
+
+    res.json({
+      message: "Repository updated successfully!",
+      repository: updatedRepository,
+    });
+  } catch (err) {
+    console.error("Error during updating repository : ", err.message);
+    res.status(500).send("Server error");
+  }
+}
 
 // Toggle repo visibility
 const toggleVisibilityById = (req, res) => {
