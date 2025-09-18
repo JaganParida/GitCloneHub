@@ -82,9 +82,22 @@ async function getAllIssues(req, res) {
   }
 }
 
-const getIssueById = (req, res) => {
-  res.send("Issue Details Fetched !");
-};
+//get issue by id
+async function getIssueById(req, res) {
+  const { id } = req.params;
+  try {
+    const issue = await Issue.findById(id);
+
+    if (!issue) {
+      return res.status(404).json({ error: "Issue not found!" });
+    }
+
+    res.json(issue);
+  } catch (err) {
+    console.error("Error during issue updation : ", err.message);
+    res.status(500).send("Server error");
+  }
+}
 
 module.exports = {
   createIssue,
