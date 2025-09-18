@@ -48,13 +48,39 @@ async function updateIssueById(req, res) {
   }
 }
 
-const deleteIssueById = (req, res) => {
-  res.send("Issue deleted!");
-};
+//delete issue by id
+async function deleteIssueById(req, res) {
+  const { id } = req.params;
 
-const getAllIssues = (req, res) => {
-  res.send("All Issues Fetched!");
-};
+  try {
+    const issue = Issue.findByIdAndDelete(id);
+
+    if (!issue) {
+      return res.status(404).json({ error: "Issue not found!" });
+    }
+    res.json({ message: "Issue deleted" });
+  } catch (err) {
+    console.error("Error during issue deletion : ", err.message);
+    res.status(500).send("Server error");
+  }
+}
+
+//get all issues
+async function getAllIssues(req, res) {
+  const { id } = req.params;
+
+  try {
+    const issues = Issue.find({ repository: id });
+
+    if (!issues) {
+      return res.status(404).json({ error: "Issues not found!" });
+    }
+    res.status(200).json(issues);
+  } catch (err) {
+    console.error("Error during issue fetching : ", err.message);
+    res.status(500).send("Server error");
+  }
+}
 
 const getIssueById = (req, res) => {
   res.send("Issue Details Fetched !");
