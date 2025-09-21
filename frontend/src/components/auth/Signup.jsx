@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../../authContext";
 
-import { PageHeader } from "@primer/react/drafts";
+import { PageHeader } from "@primer/react";
 import { Box, Button } from "@primer/react";
 import "./auth.css";
 
@@ -22,7 +22,7 @@ const Signup = () => {
 
     try {
       setLoading(true);
-      const res = await axios.post("http://localhost:3002/signup", {
+      const res = await axios.post("http://localhost:3000/signup", {
         email: email,
         password: password,
         username: username,
